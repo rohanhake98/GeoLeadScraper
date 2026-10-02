@@ -13,6 +13,7 @@ import {
   matchExportResults,
   logger,
   exportResults,
+  exportLeadSheet,
   sleep,
 } from '@chrome-extension/shared/lib';
 import { Button, Stack, Spinner, AppProvider, Logo } from '@chrome-extension/shared/components';
@@ -336,32 +337,12 @@ const App = ({ platform }: { platform: DataPlatform }) => {
         const store = (settings?.data as { export_format?: string; export_fields?: string[] }) || {};
 
         const format = store.export_format || state.export_format || DATA_EXPORT_FORMATS.CSV;
-
-        // The columns to export = the user's selection (validated). Fall back to
-        // the basic fields when nothing is selected — never dump every column.
-        let fields = matchExportResults(
-          Array.isArray(store.export_fields) ? store.export_fields : state.export_fields,
-        );
-        if (fields.length === 0) fields = [...DATA_EXPORT_BASIC_FIELDS];
-
         const prefix = [config.EXPORT_FILE_NAME_PREFIX, platform].join('-');
 
-        // Build each row using ONLY the selected fields, so the CSV columns
-        // exactly match the export configuration.
-        const data =
-          state.data?.map(item => {
-            const result: { [key: string]: number | string | boolean } = {};
-            for (const field of fields) {
-              if (field in (item as object)) {
-                result[field] = (item as Record<string, any>)[field];
-              }
-            }
-            return result;
-          }) || [];
+        logger('export lead sheet', { format, results: state.data?.length ?? 0 });
 
-        logger('export', { format, results: data.length, fields });
-
-        exportResults({ format, prefix, fields, data });
+        // Always export as the fixed 7-column lead sheet.
+        exportLeadSheet({ data: state.data ?? [], format, prefix });
       } catch (e) {
         // Surface failures to the page console for debugging instead of failing silently.
         console.error('geoleadscraper export error:', (e as Error)?.message, (e as Error)?.stack);
