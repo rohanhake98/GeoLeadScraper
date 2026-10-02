@@ -116,11 +116,11 @@ export interface IGoogleMapsExtractItem extends IExtractMapsBaseItem {
   opening_hours: string;
 }
 
-export interface IYandexMapsExtractItem extends IExtractMapsBaseItem {}
+export type IYandexMapsExtractItem = IExtractMapsBaseItem;
 
-export interface I2GisMapsExtractItem extends IExtractMapsBaseItem {}
+export type I2GisMapsExtractItem = IExtractMapsBaseItem;
 
-interface IExtractGoogleMapsState extends IExtractMapsBaseState<IGoogleMapsExtractItem> {}
+type IExtractGoogleMapsState = IExtractMapsBaseState<IGoogleMapsExtractItem>;
 
 interface IExtractGoogleMapsOptions extends IExtractMapsBaseOptions<IExtractGoogleMapsState> {
   query: IExtractGoogleQueryParams;
@@ -152,7 +152,7 @@ interface IGoogleMapsUrlParams {
   search: string;
 }
 
-interface IExtractGoogleMapsResponse extends IExtractMapsBaseResponse<IGoogleMapsExtractItem> {}
+type IExtractGoogleMapsResponse = IExtractMapsBaseResponse<IGoogleMapsExtractItem>;
 
 export const extractGoogleMapsResults = async (options: IExtractGoogleMapsOptions): Promise<void> => {
   const {
@@ -606,7 +606,7 @@ export const getGoogleMapsConfig = async () => {
 
 // yandex maps
 
-interface IExtractYandexMapsState extends IExtractMapsBaseState<IYandexMapsExtractItem> {}
+type IExtractYandexMapsState = IExtractMapsBaseState<IYandexMapsExtractItem>;
 
 interface IExtractYandexMapsOptions extends IExtractMapsBaseOptions<IExtractYandexMapsState> {
   document: Document;
@@ -837,7 +837,7 @@ export const fetchYandexMapsResultByUrl = async (
 
 // 2gis maps
 
-interface IExtract2GisMapsState extends IExtractMapsBaseState<I2GisMapsExtractItem> {}
+type IExtract2GisMapsState = IExtractMapsBaseState<I2GisMapsExtractItem>;
 
 interface IExtract2GisMapsOptions extends IExtractMapsBaseOptions<IExtract2GisMapsState> {
   url: string;
@@ -1206,7 +1206,7 @@ export const extractWebsiteResults = async ({ urls = [] }: { urls: string[] }): 
     }
 
     return data;
-  } catch (e) {
+  } catch {
     return {
       data: [],
       results: 0,

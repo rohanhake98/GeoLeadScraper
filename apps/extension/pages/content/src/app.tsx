@@ -10,19 +10,15 @@ import {
   getGoogleMapsConfig,
   getIframeById,
   sendBackgroundEvent,
-  matchExportResults,
   logger,
-  exportResults,
   exportLeadSheet,
   sleep,
 } from '@chrome-extension/shared/lib';
 import { Button, Stack, Spinner, AppProvider, Logo } from '@chrome-extension/shared/components';
 import {
   BACKGROUND_EVENTS,
-  DATA_EXPORT_BASIC_FIELDS,
   DATA_EXPORT_FIELDS,
   DATA_EXPORT_FORMATS,
-  DATA_EXPORT_PREMIUM_FIELDS,
   DATA_PARSING_MODES,
   DATA_PLATFORMS,
 } from '@chrome-extension/shared/enums';
