@@ -1,4 +1,4 @@
-﻿# GeoLeadScraper — Free Google Maps Scraper (Chrome Extension)
+# GeoLeadScraper — Free Google Maps Scraper (Chrome Extension)
 
 **GeoLeadScraper is a free, open-source Google Maps scraper** — a Chrome /
 Chromium extension that extracts public business data from **Google Maps**
@@ -67,10 +67,30 @@ date · sub-ratings · photo links · owner response · review link.
 
 ### Build from source
 Requirements: Node.js >= 20 and pnpm >= 9 (`npm i -g pnpm`).
-```bash
-pnpm install
-pnpm build:extension
+
+**Windows (PowerShell):**
+```powershell
+# 1. Copy the env file
+Copy-Item apps/extension/.env.example apps/extension/.env
+
+# 2. Install dependencies (skip Puppeteer browser download)
+$env:PUPPETEER_SKIP_DOWNLOAD="true"; pnpm install
+
+# 3. Build sub-packages first
+pnpm turbo ready --filter="./apps/extension/packages/*" --force
+
+# 4. Build the extension
+pnpm turbo build --filter="./apps/extension/chrome-extension" --filter="./apps/extension/pages/*" --force
 ```
+
+**macOS / Linux:**
+```bash
+cp apps/extension/.env.example apps/extension/.env
+PUPPETEER_SKIP_DOWNLOAD=true pnpm install
+pnpm turbo ready --filter="./apps/extension/packages/*" --force
+pnpm turbo build --filter="./apps/extension/chrome-extension" --filter="./apps/extension/pages/*" --force
+```
+
 Then in Chrome: open `chrome://extensions` → enable **Developer mode** →
 **Load unpacked** → select `apps/extension/dist`.
 
@@ -87,6 +107,241 @@ Then open extension **Settings** → set **Backend URL** (default `http://localh
 A built-in [MCP server](apps/api/MCP.md) lets an AI assistant such as Claude run
 `collect_maps(...)` to scrape businesses through the extension and analyze them.
 See [apps/api/MCP.md](apps/api/MCP.md).
+
+---
+
+## 🛠️ Install from Source Code ZIP — Complete Step-by-Step Guide
+
+> This guide walks you through **every single step** from downloading the repository ZIP to having a working Chrome extension — no prior experience required.
+
+---
+
+### Prerequisites
+
+Before you start, make sure the following are installed on your computer:
+
+| Tool | Minimum version | Download |
+|------|----------------|---------|
+| **Node.js** | v20 or later | [nodejs.org](https://nodejs.org/) |
+| **pnpm** | v9 or later | installed in Step 3 below |
+| **Google Chrome** (or any Chromium browser) | any recent version | [google.com/chrome](https://www.google.com/chrome/) |
+
+> 💡 To check if Node.js is already installed, open a terminal and run `node -v`. You need to see `v20.x.x` or higher.
+
+---
+
+### Step 1 — Download the source code ZIP
+
+1. Open your browser and go to the repository:
+   **[github.com/ozhehkovski/geoleadscraper](https://github.com/ozhehkovski/geoleadscraper)**
+2. Click the green **`< > Code`** button near the top-right of the page.
+3. In the dropdown, click **`Download ZIP`**.
+4. Your browser will download a file called **`geoleadscraper-main.zip`** (or similar) — save it anywhere you like (e.g. your `Downloads` folder).
+
+> ⚠️ This ZIP contains the **source code**. You must build it before Chrome can load it (that's what the next steps do).
+
+---
+
+### Step 2 — Extract (unzip) the file
+
+**Windows:**
+1. Right-click `geoleadscraper-main.zip` in File Explorer.
+2. Choose **"Extract All…"** → click **Extract**.
+3. A new folder named **`geoleadscraper-main`** will appear next to the ZIP.
+
+**macOS:**
+1. Double-click `geoleadscraper-main.zip` in Finder.
+2. A folder called **`geoleadscraper-main`** will be created automatically.
+
+**Linux:**
+```bash
+unzip geoleadscraper-main.zip
+```
+
+You should now have a folder with files like `package.json`, `turbo.json`, `apps/`, etc. inside it.
+
+---
+
+### Step 3 — Install pnpm (if not already installed)
+
+Open a terminal (Command Prompt / PowerShell on Windows, Terminal on Mac/Linux) and run:
+
+```bash
+npm install -g pnpm
+```
+
+Verify it worked:
+```bash
+pnpm -v
+# Should output: 9.x.x or higher
+```
+
+---
+
+### Step 4 — Open a terminal inside the project folder
+
+**Windows (File Explorer):**
+1. Open the extracted `geoleadscraper-main` folder in File Explorer.
+2. Click the address bar at the top → type `cmd` → press **Enter**.
+   *(Alternatively: hold `Shift`, right-click an empty area in the folder → "Open PowerShell window here".)*
+
+**macOS / Linux:**
+```bash
+cd ~/Downloads/geoleadscraper-main
+# (adjust the path to wherever you extracted the ZIP)
+```
+
+All remaining commands in this guide must be run from **inside this folder**.
+
+---
+
+### Step 5 — Prepare the environment and install dependencies
+
+#### Step 5a — Copy the `.env` file
+
+The build tool requires a `.env` file inside `apps/extension/`. Without it, the build silently runs **0 tasks**.
+
+**Windows (PowerShell):**
+```powershell
+Copy-Item apps\extension\.env.example apps\extension\.env
+```
+
+**macOS / Linux:**
+```bash
+cp apps/extension/.env.example apps/extension/.env
+```
+
+> ⚠️ **This step is mandatory.** Skipping it causes `pnpm build:extension` to produce "No tasks were executed" with no error message.
+
+#### Step 5b — Install project dependencies
+
+**Windows (PowerShell):**
+```powershell
+$env:PUPPETEER_SKIP_DOWNLOAD="true"; pnpm install
+```
+
+**macOS / Linux (bash/zsh):**
+```bash
+PUPPETEER_SKIP_DOWNLOAD=true pnpm install
+```
+
+> ⚠️ **Why the `PUPPETEER_SKIP_DOWNLOAD` flag?**  
+> The project includes an optional API backend that uses Puppeteer. During install, Puppeteer tries to auto-download its own bundled Chromium browser. This download often fails on restricted networks or corrupted caches. Since you only need the **Chrome extension** (not the backend), skipping this download is completely safe and has no effect on the extension.
+
+This will download all required packages into a `node_modules/` folder. It may take a minute or two depending on your internet connection.
+
+Expected output (last few lines will look something like):
+```
+Packages: +XXX
+Progress: resolved XXX, reused XXX, downloaded XXX, added XXX, done
+```
+
+---
+
+### Step 6 — Build the Chrome extension
+
+The build requires **two commands** — the first compiles the internal helper packages, the second builds the actual extension.
+
+**Step 6a — Build sub-packages** (must run first):
+
+**Windows (PowerShell):**
+```powershell
+pnpm turbo ready --filter="./apps/extension/packages/*" --force
+```
+**macOS / Linux:**
+```bash
+pnpm turbo ready --filter="./apps/extension/packages/*" --force
+```
+
+Expected: `Tasks: 3 successful, 3 total`
+
+**Step 6b — Build the extension**:
+
+```bash
+pnpm turbo build --filter="./apps/extension/chrome-extension" --filter="./apps/extension/pages/*" --force
+```
+
+Expected output:
+```
+Tasks:    7 successful, 7 total
+Cached:   0 cached, 7 total
+  Time:   ~45s
+```
+
+The final extension files are written to:
+```
+apps/extension/dist/
+```
+
+You should see these files inside `dist/`: `manifest.json`, `service-worker.js`, `injected.js`, icon files, and `popup/`, `options/`, `content/` folders.
+
+> ⚠️ If the build fails:
+> - Make sure you copied `.env` in Step 5a
+> - Make sure `pnpm install` completed without errors
+> - Make sure Node.js is v20 or higher (`node -v`)
+
+---
+
+### Step 7 — Open Chrome's Extensions page
+
+1. Open **Google Chrome**.
+2. In the address bar, type:
+   ```
+   chrome://extensions
+   ```
+   and press **Enter**.
+3. In the top-right corner of that page, toggle **"Developer mode"** to **ON**.
+   - You will see three new buttons appear: *Load unpacked*, *Pack extension*, *Update*.
+
+---
+
+### Step 8 — Load the built extension into Chrome
+
+1. Click **"Load unpacked"**.
+2. A file picker dialog opens. Navigate to the `dist` folder inside your project:
+   ```
+   geoleadscraper-main/apps/extension/dist
+   ```
+3. Select (click once) the **`dist`** folder — do **not** go inside it — then click **"Select Folder"** (Windows) or **"Open"** (Mac/Linux).
+4. The **GeoLeadScraper** extension card will appear on the `chrome://extensions` page with a blue toggle (enabled).
+
+> ✅ You're done! The extension is now installed.
+
+---
+
+### Step 9 — Pin the extension to your toolbar (recommended)
+
+1. Click the **puzzle-piece icon** (🧩) at the top-right of Chrome.
+2. Find **GeoLeadScraper** in the list.
+3. Click the **pin icon** (📌) next to it.
+4. The GeoLeadScraper logo will now appear permanently in your Chrome toolbar for easy access.
+
+---
+
+### Step 10 — Verify the extension works
+
+1. Go to **[google.com/maps](https://www.google.com/maps)**.
+2. Search for any type of business, e.g. `"coffee shops in New York"`.
+3. Wait for the results list to load on the left side.
+4. You should see the **GeoLeadScraper floating panel** appear automatically on the left.
+5. Click **"Start extracting"** — the counter should start incrementing.
+
+🎉 If you see the panel and the counter moves, everything is working correctly!
+
+---
+
+### Troubleshooting
+
+| Problem | Fix |
+|---------|-----|
+| *`pnpm install` fails with "Failed to set up chrome"* | Puppeteer can't download its browser. Use `$env:PUPPETEER_SKIP_DOWNLOAD="true"; pnpm install` (PowerShell) or `PUPPETEER_SKIP_DOWNLOAD=true pnpm install` (Mac/Linux). |
+| *Build says "No tasks were executed"* | The `.env` file is missing. Run `Copy-Item apps\extension\.env.example apps\extension\.env` (Windows) or `cp apps/extension/.env.example apps/extension/.env` (Mac/Linux), then rebuild. |
+| *"Manifest file is missing or unreadable"* in Chrome | You selected the wrong folder. Make sure you select `apps/extension/dist` — the folder that contains `manifest.json` directly. |
+| *`pnpm install` fails with other errors* | Check your Node.js version (`node -v` must be ≥ v20). Re-run `npm install -g pnpm` to update pnpm. |
+| Panel doesn't appear on Google Maps | Make sure the extension is enabled in `chrome://extensions`. Refresh the Google Maps tab after enabling. |
+| Extension icon shows an error badge | Click the error badge for details. Usually means a stale build — re-run the two build commands from Step 6 and reload the extension. |
+
+> 💡 After any code change, re-run the two build commands from Step 6, then click the **refresh icon** on the extension card at `chrome://extensions` to apply the update.
 
 ---
 
