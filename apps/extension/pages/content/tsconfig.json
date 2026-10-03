@@ -1,13 +1,26 @@
 {
-  "extends": "@chrome-extension/tsconfig/base",
+  "extends": "../../packages/tsconfig/base.json",
   "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "@chrome-extension/shared": ["../../packages/shared/index.ts"],
+      "@chrome-extension/shared/*": ["../../packages/shared/*"],
+      "tailwind-merge": ["../../node_modules/tailwind-merge/dist/types.d.ts"]
     },
-    "jsx": "react-jsx",
-    "module": "esnext",
-    "types": ["chrome", "vite/client"]
+    "types": ["chrome", "vite/client"],
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true
   },
   "include": ["src"]
 }
