@@ -570,10 +570,7 @@ data extractor · scrape google maps · google maps lead generation · business
 leads scraper · yandex maps scraper · 2gis scraper · email & phone scraper ·
 export google maps to csv/excel · open-source web scraper · no API key.
 
-## Links
-- 🌐 Website & docs: **[geoleadscraper.com](https://geoleadscraper.com/)**
-- 📋 How to use: [Step-by-step guide](#-how-to-use--step-by-step-guide)
-- ❓ FAQ: [geoleadscraper.com/faq](https://geoleadscraper.com/faq)
+
 
 ## License
 [MIT](./LICENSE) — free for personal and commercial use.
