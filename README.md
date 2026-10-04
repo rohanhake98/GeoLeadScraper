@@ -65,6 +65,61 @@ date · sub-ratings · photo links · owner response · review link.
 | Firefox | ❌ Not supported (different extension format) |
 | Safari | ❌ Not supported |
 
+## ⚡ Quick Setup (Simple)
+
+Get the extension running in under 2 minutes. Requires [Node.js ≥ 20](https://nodejs.org/) and [Git](https://git-scm.com/).
+
+**Step 1 — Clone the repo**
+```bash
+git clone https://github.com/ozhehkovski/geoleadscraper.git
+cd geoleadscraper
+```
+
+**Step 2 — Copy env & install dependencies**
+
+*Windows (PowerShell):*
+```powershell
+Copy-Item apps\extension\.env.example apps\extension\.env
+$env:PUPPETEER_SKIP_DOWNLOAD="true"; pnpm install
+```
+*macOS / Linux:*
+```bash
+cp apps/extension/.env.example apps/extension/.env
+PUPPETEER_SKIP_DOWNLOAD=true pnpm install
+```
+
+**Step 3 — Build the extension**
+```bash
+pnpm turbo ready --filter="./apps/extension/packages/*" --force
+pnpm turbo build --filter="./apps/extension/chrome-extension" --filter="./apps/extension/pages/*" --force
+```
+
+**Step 4 — Open your browser's Extensions page**
+
+| Browser | Open this URL |
+|---------|--------------|
+| Chrome | `chrome://extensions` |
+| Edge | `edge://extensions` |
+
+**Step 5 — Enable Developer mode**
+
+- **Chrome** → toggle **Developer mode** switch in the **top-right** corner
+- **Edge** → toggle **Developer mode** switch in the **bottom-left** sidebar
+
+**Step 6 — Load unpacked**
+
+1. Click **"Load unpacked"**
+2. Navigate to and select the folder: `geoleadscraper/apps/extension/dist`
+3. Click **"Select Folder"** (Windows) or **"Open"** (Mac/Linux)
+
+**Step 7 — Done! ✅**
+
+Go to **[google.com/maps](https://www.google.com/maps)**, search for any business — the GeoLeadScraper panel appears automatically on the left. Click **"Start extracting"**.
+
+> 📖 Something not working? See the [full step-by-step guide](#️-install-from-source-code-zip--complete-step-by-step-guide) below with detailed instructions and troubleshooting.
+
+---
+
 ## Quick start (install the Chrome extension)
 
 ### Install the ready-made build (no coding)
@@ -570,10 +625,7 @@ data extractor · scrape google maps · google maps lead generation · business
 leads scraper · yandex maps scraper · 2gis scraper · email & phone scraper ·
 export google maps to csv/excel · open-source web scraper · no API key.
 
-## Links
-- 🌐 Website & docs: **[geoleadscraper.com](https://geoleadscraper.com/)**
-- 📋 How to use: [Step-by-step guide](#-how-to-use--step-by-step-guide)
-- ❓ FAQ: [geoleadscraper.com/faq](https://geoleadscraper.com/faq)
+
 
 ## License
 [MIT](./LICENSE) — free for personal and commercial use.
