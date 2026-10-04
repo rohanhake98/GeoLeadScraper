@@ -46,11 +46,24 @@ date · sub-ratings · photo links · owner response · review link.
 
 ## Supported platforms
 
+### Map providers
+
 | Map | Status |
 | --- | --- |
 | Google Maps | ✅ Google Maps scraper (search results + reviews of a place) |
 | Yandex Maps | ✅ |
 | 2GIS | ✅ |
+
+### Browsers
+
+| Browser | Support |
+| ------- | ------- |
+| Google Chrome | ✅ Full support |
+| Microsoft Edge | ✅ Full support (Chromium-based, same steps as Chrome) |
+| Brave | ✅ Works (Chromium-based) |
+| Opera | ✅ Works (Chromium-based) |
+| Firefox | ❌ Not supported (different extension format) |
+| Safari | ❌ Not supported |
 
 ## Quick start (install the Chrome extension)
 
@@ -282,28 +295,39 @@ You should see these files inside `dist/`: `manifest.json`, `service-worker.js`,
 
 ---
 
-### Step 7 — Open Chrome's Extensions page
+### Step 7 — Open the Extensions page
 
-1. Open **Google Chrome**.
-2. In the address bar, type:
+**Google Chrome:**
+1. Open Chrome and in the address bar type:
    ```
    chrome://extensions
    ```
-   and press **Enter**.
-3. In the top-right corner of that page, toggle **"Developer mode"** to **ON**.
-   - You will see three new buttons appear: *Load unpacked*, *Pack extension*, *Update*.
+   Press **Enter**.
+2. In the top-right corner, toggle **"Developer mode"** to **ON**.
+   - Three buttons appear: *Load unpacked*, *Pack extension*, *Update*.
+
+**Microsoft Edge:**
+1. Open Edge and in the address bar type:
+   ```
+   edge://extensions
+   ```
+   Press **Enter**.
+2. In the bottom-left sidebar, toggle **"Developer mode"** to **ON**.
+   - The **"Load unpacked"** button appears at the top.
+
+> 💡 Edge is built on Chromium and supports Chrome extensions natively — no extra configuration needed.
 
 ---
 
-### Step 8 — Load the built extension into Chrome
+### Step 8 — Load the built extension
 
 1. Click **"Load unpacked"**.
-2. A file picker dialog opens. Navigate to the `dist` folder inside your project:
+2. A file picker opens. Navigate to the `dist` folder inside your project:
    ```
    geoleadscraper-main/apps/extension/dist
    ```
 3. Select (click once) the **`dist`** folder — do **not** go inside it — then click **"Select Folder"** (Windows) or **"Open"** (Mac/Linux).
-4. The **GeoLeadScraper** extension card will appear on the `chrome://extensions` page with a blue toggle (enabled).
+4. The **GeoLeadScraper** extension card will appear with a blue toggle (enabled).
 
 > ✅ You're done! The extension is now installed.
 
@@ -311,17 +335,22 @@ You should see these files inside `dist/`: `manifest.json`, `service-worker.js`,
 
 ### Step 9 — Pin the extension to your toolbar (recommended)
 
+**Chrome:**
 1. Click the **puzzle-piece icon** (🧩) at the top-right of Chrome.
 2. Find **GeoLeadScraper** in the list.
 3. Click the **pin icon** (📌) next to it.
-4. The GeoLeadScraper logo will now appear permanently in your Chrome toolbar for easy access.
+
+**Edge:**
+1. Click the **puzzle-piece icon** (🧩) or **Extensions** button at the top-right of Edge.
+2. Find **GeoLeadScraper** in the list.
+3. Click the **eye icon** (👁) or **"Show in toolbar"** toggle next to it.
 
 ---
 
 ### Step 10 — Verify the extension works
 
-1. Go to **[google.com/maps](https://www.google.com/maps)**.
-2. Search for any type of business, e.g. `"coffee shops in New York"`.
+1. In Chrome or Edge, go to **[google.com/maps](https://www.google.com/maps)**.
+2. Search for any business type, e.g. `"coffee shops in New York"`.
 3. Wait for the results list to load on the left side.
 4. You should see the **GeoLeadScraper floating panel** appear automatically on the left.
 5. Click **"Start extracting"** — the counter should start incrementing.
@@ -338,8 +367,9 @@ You should see these files inside `dist/`: `manifest.json`, `service-worker.js`,
 | *Build says "No tasks were executed"* | The `.env` file is missing. Run `Copy-Item apps\extension\.env.example apps\extension\.env` (Windows) or `cp apps/extension/.env.example apps/extension/.env` (Mac/Linux), then rebuild. |
 | *"Manifest file is missing or unreadable"* in Chrome | You selected the wrong folder. Make sure you select `apps/extension/dist` — the folder that contains `manifest.json` directly. |
 | *`pnpm install` fails with other errors* | Check your Node.js version (`node -v` must be ≥ v20). Re-run `npm install -g pnpm` to update pnpm. |
-| Panel doesn't appear on Google Maps | Make sure the extension is enabled in `chrome://extensions`. Refresh the Google Maps tab after enabling. |
+| Panel doesn't appear on Google Maps | Make sure the extension is enabled in `chrome://extensions` or `edge://extensions`. Refresh the Google Maps tab after enabling. |
 | Extension icon shows an error badge | Click the error badge for details. Usually means a stale build — re-run the two build commands from Step 6 and reload the extension. |
+| Edge shows *"Extensions that aren't from the Microsoft Store"* banner | This is just a warning. Click **"Keep it on"** — the extension is safe to use. You can also go to `edge://extensions` → toggle **"Allow extensions from other stores"** to dismiss this permanently. |
 
 > 💡 After any code change, re-run the two build commands from Step 6, then click the **refresh icon** on the extension card at `chrome://extensions` to apply the update.
 
